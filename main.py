@@ -1,4 +1,5 @@
 import argparse
+import struct
 
 def parse_j1939_id(can_id):
     """Parse J1939 CAN ID into its components"""
@@ -99,10 +100,12 @@ def main():
             source_address = int(args.source_address, 0)
             reserved = int(args.reserved, 0)
             
-            can_id = build_j1939_id(priority, pgn, source_address, reserved)
+            can_id = build_j1939_id(priority, pgn, source_address, reserved) & 0x1FFFFFFF
+            can_id_decimal = (can_id & 0x1FFFFFFF) | 0x80000000
+
             
             print(f"\nGenerated J1939 CAN ID:")
-            print(f"Decimal: {can_id}")
+            print(f"Decimal: {can_id_decimal}")
             print(f"Hex:     0x{can_id:08X}")
             
             # Also show the components for verification
